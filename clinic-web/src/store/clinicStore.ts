@@ -475,8 +475,8 @@ export const useClinicStore = create<ClinicStore>()(
         if (!validatePatient(patient)) {
           throw new Error('Invalid patient data');
         }
-        set((state) => ({
-          patients: state.patients.map((p) => (p.id === id ? { ...p, ...patient } : p)),
+        set(() => ({
+          patients: get().patients.map((p) => (p.id === id ? { ...p, ...patient } : p)),
         }));
       },
 
@@ -484,8 +484,8 @@ export const useClinicStore = create<ClinicStore>()(
         if (!validateAppointment(appointment)) {
           throw new Error('Invalid appointment data');
         }
-        set((state) => ({
-          appointments: state.appointments.map((a) => (a.id === id ? { ...a, ...appointment } : a)),
+        set(() => ({
+          appointments: get().appointments.map((a) => (a.id === id ? { ...a, ...appointment } : a)),
         }));
       },
 
@@ -493,8 +493,8 @@ export const useClinicStore = create<ClinicStore>()(
         if (!validateMedicalRecord(record)) {
           throw new Error('Invalid medical record data');
         }
-        set((state) => ({
-          medicalRecords: state.medicalRecords.map((r) => (r.id === id ? { ...r, ...record } : r)),
+        set(() => ({
+          medicalRecords: get().medicalRecords.map((r) => (r.id === id ? { ...r, ...record } : r)),
         }));
       },
 
