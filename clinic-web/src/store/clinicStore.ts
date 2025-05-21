@@ -548,8 +548,7 @@ export const useClinicStore = create<ClinicStore>()(
       },
 
       getNextQueueNumber: () => {
-        const state = get();
-        const maxNumber = Math.max(...state.queueItems.map((q) => q.queueNumber), 0);
+        const maxNumber = Math.max(...get().queueItems.map((q) => q.queueNumber), 0);
         return maxNumber + 1;
       },
 
