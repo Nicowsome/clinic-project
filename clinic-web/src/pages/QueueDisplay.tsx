@@ -48,20 +48,7 @@ export default function QueueDisplay() {
     return () => clearInterval(interval);
   }, []);
 
-  // Listen for localStorage changes to update queue in real time
-  useEffect(() => {
-    const handleStorage = (event: StorageEvent) => {
-      if (event.key === 'clinic-storage') {
-        const store = JSON.parse(localStorage.getItem('clinic-storage') || '{}');
-        if (store && store.state && store.state.queueItems) {
-          setLocalQueue(store.state.queueItems);
-        }
-      }
-    };
-    window.addEventListener('storage', handleStorage);
-    return () => window.removeEventListener('storage', handleStorage);
-  }, []);
-
+  // Update local queue when queueItems changes
   useEffect(() => {
     setLocalQueue(queueItems);
   }, [queueItems]);
