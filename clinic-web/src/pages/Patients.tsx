@@ -30,6 +30,7 @@ import {
 } from '@mui/icons-material';
 import { useClinicStore } from '../store/clinicStore';
 import ConfirmationDialog from '../components/ConfirmationDialog';
+import { useNavigate } from 'react-router-dom';
 
 const fadeIn = keyframes`
   from {
@@ -78,6 +79,7 @@ const initialFormData: PatientFormData = {
 };
 
 export default function Patients() {
+  const navigate = useNavigate();
   const { patients, addPatient, updatePatient, deletePatient, medicalRecords } = useClinicStore();
   const [open, setOpen] = useState(false);
   const [editingPatient, setEditingPatient] = useState<string | null>(null);
@@ -152,7 +154,7 @@ export default function Patients() {
   };
 
   const handleViewRecords = (patientId: string) => {
-    window.open(`/patient-records/${patientId}`, '_blank');
+    navigate(`/patient-records/${patientId}`);
   };
 
   const handleCloseRecords = () => {

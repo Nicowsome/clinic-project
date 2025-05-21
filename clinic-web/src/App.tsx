@@ -232,9 +232,11 @@ function App() {
               path="/patient-records/:patientId"
               element={
                 <ProtectedRoute>
-                  <RouteWrapper>
-                    <PatientRecords />
-                  </RouteWrapper>
+                  <MainLayout>
+                    <RouteWrapper>
+                      <PatientRecords />
+                    </RouteWrapper>
+                  </MainLayout>
                 </ProtectedRoute>
               }
             />
