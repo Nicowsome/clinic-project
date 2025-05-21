@@ -499,32 +499,32 @@ export const useClinicStore = create<ClinicStore>()(
       },
 
       deletePatient: async (id, onConfirm) => {
-        const state = get();
+        const store = get();
         // Check if patient has any associated records
-        const hasAppointments = state.appointments.some(a => a.patientId === id);
-        const hasMedicalRecords = state.medicalRecords.some(r => r.patientId === id);
+        const hasAppointments = store.appointments.some(a => a.patientId === id);
+        const hasMedicalRecords = store.medicalRecords.some(r => r.patientId === id);
         
         if (hasAppointments || hasMedicalRecords) {
           throw new Error('Cannot delete patient with associated records');
         }
         
         onConfirm();
-        set((state) => ({
-          patients: state.patients.filter((p) => p.id !== id),
+        set(() => ({
+          patients: get().patients.filter((p) => p.id !== id),
         }));
       },
 
       deleteAppointment: async (id, onConfirm) => {
         onConfirm();
-        set((state) => ({
-          appointments: state.appointments.filter((a) => a.id !== id),
+        set(() => ({
+          appointments: get().appointments.filter((a) => a.id !== id),
         }));
       },
 
       deleteMedicalRecord: async (id, onConfirm) => {
         onConfirm();
-        set((state) => ({
-          medicalRecords: state.medicalRecords.filter((r) => r.id !== id),
+        set(() => ({
+          medicalRecords: get().medicalRecords.filter((r) => r.id !== id),
         }));
       },
 

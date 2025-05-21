@@ -37,11 +37,7 @@ const pulse = keyframes`
 `;
 
 export default function QueueDisplay() {
-  const { queueItems, doctors } = useClinicStore();
-  const [selectedDoctor, setSelectedDoctor] = useState<string>('all');
-  const [open, setOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<QueueItem | null>(null);
-  const theme = useTheme();
+  const { queueItems } = useClinicStore();
   const [localQueue, setLocalQueue] = useState(queueItems);
   const [now, setNow] = useState(new Date());
   const audioRef = useRef<HTMLAudioElement | null>(null);

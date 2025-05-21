@@ -63,17 +63,6 @@ interface AppointmentFormData {
   notes: string;
 }
 
-const initialFormData: AppointmentFormData = {
-  patientId: '',
-  patientName: '',
-  date: new Date().toISOString().split('T')[0],
-  time: '09:00',
-  type: 'Check-up',
-  status: 'Scheduled',
-  doctor: 'Dr. Wilson',
-  notes: '',
-};
-
 const Appointments: React.FC = () => {
   const { appointments, patients, addAppointment, updateAppointment, deleteAppointment } = useClinicStore();
   const [open, setOpen] = useState(false);

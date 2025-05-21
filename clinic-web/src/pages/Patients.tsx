@@ -20,18 +20,15 @@ import {
   Grid,
   keyframes,
   useTheme,
-  DialogContentText,
   Alert,
-  Chip,
 } from '@mui/material';
 import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   Add as AddIcon,
   EventNote as EventNoteIcon,
-  Person as PersonIcon,
 } from '@mui/icons-material';
-import { useClinicStore, Patient, Gender } from '../store/clinicStore';
+import { useClinicStore } from '../store/clinicStore';
 import ConfirmationDialog from '../components/ConfirmationDialog';
 
 const fadeIn = keyframes`

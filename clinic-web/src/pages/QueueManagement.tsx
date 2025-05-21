@@ -34,12 +34,10 @@ import {
   Delete as DeleteIcon,
   OpenInNew as OpenInNewIcon,
   PlayArrow as StartIcon,
-  Stop as StopIcon,
   CheckCircle as CompleteIcon,
   Replay as RevertIcon,
-  Person as PersonIcon,
 } from '@mui/icons-material';
-import { useClinicStore, QueueItem, Gender, AppointmentType, QueueStatus } from '../store/clinicStore';
+import { useClinicStore, QueueItem, Gender } from '../store/clinicStore';
 
 interface PatientFormData {
   firstName: string;

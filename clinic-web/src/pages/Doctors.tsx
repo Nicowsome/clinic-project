@@ -22,16 +22,12 @@ import {
   keyframes,
   useTheme,
   Alert,
-  Card,
-  CardContent,
 } from '@mui/material';
 import {
   Add as AddIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
-  Person as PersonIcon,
 } from '@mui/icons-material';
-import { useClinicStore } from '../store/clinicStore';
 import ConfirmationDialog from '../components/ConfirmationDialog';
 
 const fadeIn = keyframes`
