@@ -441,12 +441,12 @@ export const useClinicStore = create<ClinicStore>()(
           if (!validatePatient(patient)) {
             throw new Error('Invalid patient data');
           }
-          set((state) => ({
-            patients: [...state.patients, { ...patient, id: Date.now().toString() }],
+          set(() => ({
+            patients: [...get().patients, { ...patient, id: Date.now().toString() }],
             error: null,
           }));
         } catch (error) {
-          set((state) => ({
+          set(() => ({
             error: error instanceof Error ? error.message : 'Failed to add patient',
           }));
           throw error;
@@ -457,8 +457,8 @@ export const useClinicStore = create<ClinicStore>()(
         if (!validateAppointment(appointment)) {
           throw new Error('Invalid appointment data');
         }
-        set((state) => ({
-          appointments: [...state.appointments, { ...appointment, id: Date.now().toString() }],
+        set(() => ({
+          appointments: [...get().appointments, { ...appointment, id: Date.now().toString() }],
         }));
       },
 
@@ -466,8 +466,8 @@ export const useClinicStore = create<ClinicStore>()(
         if (!validateMedicalRecord(record)) {
           throw new Error('Invalid medical record data');
         }
-        set((state) => ({
-          medicalRecords: [...state.medicalRecords, { ...record, id: Date.now().toString() }],
+        set(() => ({
+          medicalRecords: [...get().medicalRecords, { ...record, id: Date.now().toString() }],
         }));
       },
 
