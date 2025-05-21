@@ -68,12 +68,14 @@ export interface Appointment {
 export interface MedicalRecord {
   id: string;
   patientId: string;
+  patientName: string;
   date: string;
   reason: string;
   diagnosis: string;
   treatment: string;
   doctor: string;
   notes?: string;
+  status: MedicalRecordStatus;
 }
 
 export interface QueueItem {
@@ -281,29 +283,35 @@ const dummyMedicalRecords: MedicalRecord[] = [
   {
     id: '1',
     patientId: '1',
+    patientName: 'John Smith',
     date: '2024-03-15',
     reason: 'Hypertension',
     diagnosis: 'Hypertension',
     treatment: 'Lisinopril 10mg daily',
     doctor: 'Dr. Wilson',
+    status: 'Active',
   },
   {
     id: '2',
     patientId: '2',
+    patientName: 'Sarah Johnson',
     date: '2024-03-10',
     reason: 'Type 2 Diabetes',
     diagnosis: 'Type 2 Diabetes',
     treatment: 'Metformin 500mg twice daily',
     doctor: 'Dr. Martinez',
+    status: 'Active',
   },
   {
     id: '3',
     patientId: '3',
+    patientName: 'Michael Brown',
     date: '2024-03-05',
     reason: 'Acute Bronchitis',
     diagnosis: 'Acute Bronchitis',
     treatment: 'Azithromycin 500mg once daily',
     doctor: 'Dr. Wilson',
+    status: 'Active',
   },
 ];
 

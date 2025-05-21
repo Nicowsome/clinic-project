@@ -7,7 +7,6 @@ import {
   Toolbar,
   List,
   Typography,
-  Divider,
   IconButton,
   ListItem,
   ListItemButton,
@@ -17,7 +16,6 @@ import {
   useMediaQuery,
   CssBaseline,
   Badge,
-  Avatar,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -25,11 +23,13 @@ import {
   People as PeopleIcon,
   EventNote as EventNoteIcon,
   Queue as QueueIcon,
-  MedicalServices as MedicalServicesIcon,
-  Settings as SettingsIcon,
+  Description as DescriptionIcon,
+  ExitToApp as ExitToAppIcon,
   LocalHospital as LogoIcon,
+  Settings as SettingsIcon,
   Notifications as NotificationsIcon,
 } from '@mui/icons-material';
+import { useClinicStore } from '../store/clinicStore';
 import mainLogo from '../assets/main-logo.png';
 import useAuth from '../hooks/useAuth';
 

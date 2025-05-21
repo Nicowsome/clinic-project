@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Box,
   Paper,
@@ -19,7 +19,6 @@ import {
   MenuItem,
   Grid,
   Chip,
-  useTheme,
 } from '@mui/material';
 import {
   Edit as EditIcon,
@@ -35,6 +34,7 @@ const initialFormData: MedicalRecordFormData = {
   patientId: '',
   patientName: '',
   date: '',
+  reason: '',
   diagnosis: '',
   treatment: '',
   notes: '',
@@ -48,20 +48,14 @@ const MedicalRecords: React.FC = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<MedicalRecord | null>(null);
   const [formData, setFormData] = useState<MedicalRecordFormData>(initialFormData);
-  const theme = useTheme();
 
   const handleOpen = (record?: MedicalRecord) => {
     if (record) {
+      const { id, ...recordData } = record;
       setSelectedRecord(record);
       setFormData({
-        patientId: record.patientId,
-        patientName: record.patientName,
-        date: record.date,
-        diagnosis: record.diagnosis,
-        treatment: record.treatment,
-        notes: record.notes,
-        status: record.status,
-        doctor: record.doctor,
+        ...recordData,
+        notes: recordData.notes || '',
       });
     } else {
       setSelectedRecord(null);
@@ -258,6 +252,16 @@ const MedicalRecords: React.FC = () => {
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 multiline
                 rows={3}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Reason for Visit"
+                value={formData.reason}
+                onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
+                multiline
+                rows={2}
               />
             </Grid>
             <Grid item xs={12}>
