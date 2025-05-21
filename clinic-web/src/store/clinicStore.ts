@@ -542,8 +542,8 @@ export const useClinicStore = create<ClinicStore>()(
 
       removeFromQueue: async (id, onConfirm) => {
         onConfirm();
-        set((state) => ({
-          queueItems: state.queueItems.filter((q) => q.id !== id),
+        set(() => ({
+          queueItems: get().queueItems.filter((q) => q.id !== id),
         }));
       },
 
@@ -554,7 +554,7 @@ export const useClinicStore = create<ClinicStore>()(
       },
 
       clearErrors: () => {
-        set((state) => ({
+        set(() => ({
           error: null,
         }));
       },
