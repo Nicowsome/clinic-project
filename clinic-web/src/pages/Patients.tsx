@@ -173,19 +173,6 @@ export default function Patients() {
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Scheduled':
-        return 'info';
-      case 'Completed':
-        return 'success';
-      case 'Cancelled':
-        return 'error';
-      default:
-        return 'default';
-    }
-  };
-
   return (
     <Box sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
       <Box sx={{ 

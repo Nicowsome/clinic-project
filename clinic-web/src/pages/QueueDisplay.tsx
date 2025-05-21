@@ -6,7 +6,6 @@ import {
   Card,
   CardContent,
   Avatar,
-  useTheme,
   keyframes,
 } from '@mui/material';
 import { useClinicStore, QueueItem } from '../store/clinicStore';
@@ -77,7 +76,6 @@ export default function QueueDisplay() {
 
   const inProgressItem = activeQueueItems.find(item => item.status === 'In Progress');
   const waitingItems = activeQueueItems.filter(item => item.status === 'Waiting');
-  const nextQueueNumber = waitingItems.length > 0 ? waitingItems[0].queueNumber : null;
   const totalQueueCount = activeQueueItems.length;
 
   // Only show one queue item: in progress, or next waiting

@@ -528,16 +528,16 @@ export const useClinicStore = create<ClinicStore>()(
         }));
       },
 
-      addToQueue: async (item) => set((state) => ({
-        queueItems: [...state.queueItems, { 
+      addToQueue: async (item) => set(() => ({
+        queueItems: [...get().queueItems, { 
           ...item, 
           id: Date.now().toString(),
           queueNumber: get().getNextQueueNumber(),
         }],
       })),
 
-      updateQueueItem: async (id, item) => set((state) => ({
-        queueItems: state.queueItems.map((q) => (q.id === id ? { ...q, ...item } : q)),
+      updateQueueItem: async (id, item) => set(() => ({
+        queueItems: get().queueItems.map((q) => (q.id === id ? { ...q, ...item } : q)),
       })),
 
       removeFromQueue: async (id, onConfirm) => {
