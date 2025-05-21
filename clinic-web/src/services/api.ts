@@ -1,27 +1,22 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3000/api', // Replace with your actual API URL
+  baseURL: (import.meta as any).env?.VITE_API_URL ? (import.meta as any).env.VITE_API_URL : 'http://localhost:3000/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Request interceptor for adding auth token
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
+// Add request interceptor for authentication
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
-);
+  return config;
+});
 
-// Response interceptor for handling errors
+// Add response interceptor for error handling
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -51,9 +46,19 @@ export const appointmentService = {
 };
 
 export const authService = {
-  login: (credentials: { email: string; password: string }) =>
-    api.post('/auth/login', credentials),
-  register: (userData: any) => api.post('/auth/register', userData),
+  login: (credentials: { email: string; password: string }) => {
+    // Use direct URL to ensure correct path for login
+    return axios.post('http://localhost:3000/api/v1/auth/login', credentials, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+  },
+  register: (userData: any) => axios.post('http://localhost:3000/api/v1/auth/register', userData, {
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  }),
   logout: () => {
     localStorage.removeItem('token');
     window.location.href = '/login';

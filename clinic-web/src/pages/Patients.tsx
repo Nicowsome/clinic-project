@@ -21,6 +21,7 @@ import {
   keyframes,
   useTheme,
   Alert,
+  Stack,
 } from '@mui/material';
 import {
   Edit as EditIcon,
@@ -29,6 +30,7 @@ import {
   EventNote as EventNoteIcon,
 } from '@mui/icons-material';
 import { useClinicStore } from '../store/clinicStore';
+import ExportButton from '../components/ExportButton';
 import ConfirmationDialog from '../components/ConfirmationDialog';
 import { useNavigate } from 'react-router-dom';
 
@@ -90,6 +92,7 @@ export default function Patients() {
   const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<typeof patients[0] | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleOpen = (patientId?: string) => {
     if (patientId) {
@@ -194,23 +197,53 @@ export default function Patients() {
         >
           Patients
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => handleOpen()}
-          sx={{
-            borderRadius: 2,
-            textTransform: 'none',
-            px: 3,
-            transition: 'all 0.3s ease-in-out',
-            '&:hover': {
-              transform: 'translateY(-2px)',
-              boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+        <Stack direction="row" spacing={2}>
+          <ExportButton
+            data={patients}
+            type="patients"
+            buttonVariant="outlined"
+            buttonText="Export Patients"
+            disabled={patients.length === 0}
+          />
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => handleOpen()}
+            sx={{
+              borderRadius: 2,
+              textTransform: 'none',
+              px: 3,
+              transition: 'all 0.3s ease-in-out',
+              '&:hover': {
+                transform: 'translateY(-2px)',
+                boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+              },
+            }}
+          >
+            Add Patient
+          </Button>
+        </Stack>
+      </Box>
+      
+      {/* Search Bar */}
+      <Box sx={{ mb: 3, animation: `${fadeIn} 0.5s ease-out 0.2s` }}>
+        <TextField
+          fullWidth
+          variant="outlined"
+          placeholder="Search patients by name, phone, or email..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          InputProps={{
+            sx: {
+              borderRadius: 2,
+              backgroundColor: 'white',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+              '&:hover': {
+                boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+              },
             },
           }}
-        >
-          Add Patient
-        </Button>
+        />
       </Box>
 
       <TableContainer 
@@ -237,7 +270,20 @@ export default function Patients() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {patients.map((patient, index) => (
+            {patients
+              .filter(patient => {
+                const searchTermLower = searchQuery.toLowerCase();
+                const fullName = `${patient.firstName} ${patient.middleName} ${patient.lastName}`.toLowerCase();
+                const reverseName = `${patient.lastName}, ${patient.firstName} ${patient.middleName}`.toLowerCase();
+                return (
+                  fullName.includes(searchTermLower) ||
+                  reverseName.includes(searchTermLower) ||
+                  patient.phone.toLowerCase().includes(searchTermLower) ||
+                  patient.email.toLowerCase().includes(searchTermLower) ||
+                  patient.address.toLowerCase().includes(searchTermLower)
+                );
+              })
+              .map((patient, index) => (
               <TableRow 
                 key={patient.id}
                 sx={{

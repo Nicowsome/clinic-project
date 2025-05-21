@@ -11,6 +11,8 @@ import {
   ListItemText,
   ListItemIcon,
   Chip,
+  Tabs,
+  Tab,
 } from '@mui/material';
 import {
   People as PeopleIcon,

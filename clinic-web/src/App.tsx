@@ -17,6 +17,14 @@ const QueueDisplay = lazy(() => import('./pages/QueueDisplay'))
 const Settings = lazy(() => import('./pages/Settings'))
 const PatientRecords = lazy(() => import('./pages/PatientRecords'))
 
+// New clinic management features
+const MedicalRecords = lazy(() => import('./pages/medical-records'))
+const Prescriptions = lazy(() => import('./pages/prescriptions'))
+const Billing = lazy(() => import('./pages/billing'))
+const Inventory = lazy(() => import('./pages/inventory'))
+const StaffManagement = lazy(() => import('./pages/staff'))
+const Reports = lazy(() => import('./pages/reports'))
+
 // Loading component
 const LoadingFallback = () => (
   <Box
@@ -147,12 +155,18 @@ const theme = createTheme({
   },
 })
 
+// Import NotificationProvider and ToastNotification
+import { NotificationProvider } from './context/NotificationContext';
+import ToastNotification from './components/ToastNotification';
+
 function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Router>
+        <NotificationProvider>
+          <ToastNotification />
+          <Router>
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
@@ -173,7 +187,7 @@ function App() {
             <Route
               path="/doctors"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute allowedRoles={['admin', 'nurse']}>
                   <MainLayout>
                     <RouteWrapper>
                       <Doctors />
@@ -209,7 +223,7 @@ function App() {
             <Route
               path="/queue"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute allowedRoles={['admin', 'nurse']}>
                   <MainLayout>
                     <RouteWrapper>
                       <QueueManagement />
@@ -247,6 +261,80 @@ function App() {
                   <MainLayout>
                     <RouteWrapper>
                       <Settings />
+                    </RouteWrapper>
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* New Clinic Management Features */}
+            <Route
+              path="/medical-records"
+              element={
+                <ProtectedRoute>
+                  <MainLayout>
+                    <RouteWrapper>
+                      <MedicalRecords />
+                    </RouteWrapper>
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/prescriptions"
+              element={
+                <ProtectedRoute>
+                  <MainLayout>
+                    <RouteWrapper>
+                      <Prescriptions />
+                    </RouteWrapper>
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/billing"
+              element={
+                <ProtectedRoute>
+                  <MainLayout>
+                    <RouteWrapper>
+                      <Billing />
+                    </RouteWrapper>
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/inventory"
+              element={
+                <ProtectedRoute>
+                  <MainLayout>
+                    <RouteWrapper>
+                      <Inventory />
+                    </RouteWrapper>
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/staff"
+              element={
+                <ProtectedRoute>
+                  <MainLayout>
+                    <RouteWrapper>
+                      <StaffManagement />
+                    </RouteWrapper>
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/reports"
+              element={
+                <ProtectedRoute>
+                  <MainLayout>
+                    <RouteWrapper>
+                      <Reports />
                     </RouteWrapper>
                   </MainLayout>
                 </ProtectedRoute>
@@ -292,6 +380,7 @@ function App() {
             />
           </Routes>
         </Router>
+        </NotificationProvider>
       </ThemeProvider>
     </ErrorBoundary>
   )

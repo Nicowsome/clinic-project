@@ -15,8 +15,10 @@ import {
   useTheme,
   useMediaQuery,
   CssBaseline,
-  Badge,
   Avatar,
+  Menu,
+  MenuItem,
+  Divider,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -25,9 +27,18 @@ import {
   EventNote as EventNoteIcon,
   Queue as QueueIcon,
   Settings as SettingsIcon,
-  Notifications as NotificationsIcon,
   LocalHospital as LogoIcon,
+  Logout as LogoutIcon,
+  AccountCircle as AccountCircleIcon,
+
+  Receipt as ReceiptIcon,
+  AttachMoney as AttachMoneyIcon,
+  Inventory as InventoryIcon,
+  SupervisorAccount as SupervisorAccountIcon,
+  BarChart as BarChartIcon,
+  MedicalServices as MedicalServicesIcon,
 } from '@mui/icons-material';
+import NotificationCenter from './NotificationCenter';
 import mainLogo from '../assets/main-logo.png';
 import useAuth from '../hooks/useAuth';
 
@@ -37,36 +48,79 @@ interface MainLayoutProps {
   children: ReactNode;
 }
 
-const menuItems = [
+// Define all possible menu items
+const allMenuItems = [
   {
     text: 'Dashboard',
     icon: <DashboardIcon />,
     path: '/dashboard',
+    roles: ['admin', 'doctor', 'nurse'], // All roles can access
   },
   {
     text: 'Doctors',
     icon: <LogoIcon />,
     path: '/doctors',
+    roles: ['admin', 'nurse'], // Doctors cannot access
   },
   {
     text: 'Patients',
     icon: <PeopleIcon />,
     path: '/patients',
+    roles: ['admin', 'doctor', 'nurse'], // All roles can access
   },
   {
     text: 'Appointments',
     icon: <EventNoteIcon />,
     path: '/appointments',
+    roles: ['admin', 'doctor', 'nurse'], // All roles can access
+  },
+  {
+    text: 'Medical Records',
+    icon: <MedicalServicesIcon />,
+    path: '/medical-records',
+    roles: ['admin', 'doctor', 'nurse'], // All roles can access
+  },
+  {
+    text: 'Prescriptions',
+    icon: <ReceiptIcon />,
+    path: '/prescriptions',
+    roles: ['admin', 'doctor', 'nurse'], // All roles can access
+  },
+  {
+    text: 'Billing & Payments',
+    icon: <AttachMoneyIcon />,
+    path: '/billing',
+    roles: ['admin', 'nurse'], // Only admin and nurse can access
+  },
+  {
+    text: 'Inventory',
+    icon: <InventoryIcon />,
+    path: '/inventory',
+    roles: ['admin', 'nurse'], // Only admin and nurse can access
+  },
+  {
+    text: 'Staff Management',
+    icon: <SupervisorAccountIcon />,
+    path: '/staff',
+    roles: ['admin'], // Only admin can access
+  },
+  {
+    text: 'Reports & Analytics',
+    icon: <BarChartIcon />,
+    path: '/reports',
+    roles: ['admin'], // Only admin can access
   },
   {
     text: 'Queue Management',
     icon: <QueueIcon />,
     path: '/queue',
+    roles: ['admin', 'nurse'], // Doctors cannot access
   },
   {
     text: 'Settings',
     icon: <SettingsIcon />,
     path: '/settings',
+    roles: ['admin', 'doctor', 'nurse'], // All roles can access
   },
 ];
 
@@ -78,6 +132,13 @@ export default function MainLayout({ children }: MainLayoutProps) {
   const location = useLocation();
   const { logout } = useAuth();
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  
+  // Get user role from localStorage
+  const userRole = localStorage.getItem('userRole') || 'doctor'; // Default to doctor if not set
+  
+  // Filter menu items based on user role
+  const menuItems = allMenuItems.filter(item => item.roles.includes(userRole));
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -89,6 +150,21 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
+    event.preventDefault();
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    handleMenuClose();
+    logout();
   };
 
   const drawer = (
@@ -272,25 +348,60 @@ export default function MainLayout({ children }: MainLayoutProps) {
               </Typography>
             </Box>
           </Box>
-          <IconButton color="inherit" sx={{ color: 'text.secondary' }}>
-            <Badge badgeContent={3} color="error">
-              <NotificationsIcon />
-            </Badge>
+          {/* Notification Center */}
+          <Box sx={{ mx: 1 }}>
+            <NotificationCenter />
+          </Box>
+          <IconButton
+            onClick={handleMenuOpen}
+            sx={{ ml: 0 }}
+            aria-controls="account-menu"
+            aria-haspopup="true"
+            aria-expanded={Boolean(anchorEl) ? 'true' : undefined}
+          >
+            <Avatar
+              sx={{
+                width: 40,
+                height: 40,
+                bgcolor: theme.palette.primary.main,
+                cursor: 'pointer',
+                '&:hover': {
+                  bgcolor: theme.palette.primary.dark,
+                },
+              }}
+            >
+              A
+            </Avatar>
           </IconButton>
-          <Avatar
-            sx={{
-              width: 40,
-              height: 40,
-              bgcolor: theme.palette.primary.main,
-              cursor: 'pointer',
-              '&:hover': {
-                bgcolor: theme.palette.primary.dark,
+          <Menu
+            id="account-menu"
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+            PaperProps={{
+              sx: {
+                mt: 1.5,
+                boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                borderRadius: 2,
               },
             }}
-            onClick={logout}
+            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           >
-            A
-          </Avatar>
+            <MenuItem onClick={handleMenuClose}>
+              <ListItemIcon>
+                <AccountCircleIcon fontSize="small" />
+              </ListItemIcon>
+              Profile
+            </MenuItem>
+            <Divider />
+            <MenuItem onClick={handleLogout}>
+              <ListItemIcon sx={{ color: 'error.main' }}>
+                <LogoutIcon fontSize="small" />
+              </ListItemIcon>
+              Logout
+            </MenuItem>
+          </Menu>
         </Toolbar>
       </AppBar>
       <Box

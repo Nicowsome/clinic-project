@@ -25,6 +25,13 @@ import {
   Settings as SettingsIcon,
   Logout as LogoutIcon,
   AccountCircle as AccountCircleIcon,
+
+  Receipt as ReceiptIcon,
+  AttachMoney as AttachMoneyIcon,
+  Inventory as InventoryIcon,
+  SupervisorAccount as SupervisorAccountIcon,
+  BarChart as BarChartIcon,
+  MedicalServices as MedicalServicesIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useClinicStore } from '../../store/clinicStore';
@@ -49,6 +56,12 @@ export default function MainLayout({ children }: MainLayoutProps) {
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
     { text: 'Patients', icon: <PeopleIcon />, path: '/patients' },
     { text: 'Appointments', icon: <EventIcon />, path: '/appointments' },
+    { text: 'Medical Records', icon: <MedicalServicesIcon />, path: '/medical-records' },
+    { text: 'Prescriptions', icon: <ReceiptIcon />, path: '/prescriptions' },
+    { text: 'Billing & Payments', icon: <AttachMoneyIcon />, path: '/billing' },
+    { text: 'Inventory', icon: <InventoryIcon />, path: '/inventory' },
+    { text: 'Staff Management', icon: <SupervisorAccountIcon />, path: '/staff' },
+    { text: 'Reports & Analytics', icon: <BarChartIcon />, path: '/reports' },
     { text: 'Queue Management', icon: <QueueIcon />, path: '/queue' },
     { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
   ];
@@ -66,6 +79,8 @@ export default function MainLayout({ children }: MainLayoutProps) {
   };
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
+    event.preventDefault();
     setAnchorEl(event.currentTarget);
   };
 
@@ -131,33 +146,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
           </ListItem>
         ))}
       </List>
-      <List sx={{ px: 2 }}>
-        <ListItem 
-          button 
-          onClick={handleLogout}
-          sx={{
-            borderRadius: 2,
-            mb: 1,
-            '&:hover': {
-              backgroundColor: 'rgba(0, 0, 0, 0.04)',
-            },
-          }}
-        >
-          <ListItemIcon sx={{ 
-            color: theme.palette.error.main,
-            minWidth: 40,
-          }}>
-            <LogoutIcon />
-          </ListItemIcon>
-          <ListItemText 
-            primary="Logout" 
-            primaryTypographyProps={{
-              fontWeight: 500,
-              color: theme.palette.error.main,
-            }}
-          />
-        </ListItem>
-      </List>
+      {/* Removed duplicate logout button from sidebar */}
     </Box>
   );
 
@@ -219,6 +208,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
               sx={{ ml: 0 }}
               aria-controls="account-menu"
               aria-haspopup="true"
+              aria-expanded={Boolean(anchorEl) ? 'true' : undefined}
             >
               <Avatar sx={{ bgcolor: 'secondary.main' }}>
                 <AccountCircleIcon />
@@ -244,7 +234,11 @@ export default function MainLayout({ children }: MainLayoutProps) {
               </ListItemIcon>
               Profile
             </MenuItem>
-            <MenuItem onClick={handleLogout}>
+            <MenuItem onClick={(e) => {
+              e.stopPropagation();
+              handleMenuClose();
+              handleLogout();
+            }}>
               <ListItemIcon>
                 <LogoutIcon fontSize="small" />
               </ListItemIcon>

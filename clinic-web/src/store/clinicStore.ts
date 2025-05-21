@@ -560,10 +560,10 @@ export const useClinicStore = create<ClinicStore>()(
 
       logout: () => {
         set({
-          patients: [],
-          appointments: [],
-          medicalRecords: [],
-          queueItems: [],
+          patients: dummyPatients,
+          appointments: dummyAppointments,
+          medicalRecords: dummyMedicalRecords,
+          queueItems: dummyQueue,
           doctors: dummyDoctors,
           loading: false,
           error: null,

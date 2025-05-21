@@ -1,16 +1,20 @@
-import { useEffect, useState, useRef } from 'react';
-import {
-  Box,
-  Typography,
-  Grid,
-  Card,
-  CardContent,
-  Avatar,
-  keyframes,
-} from '@mui/material';
+import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Avatar from '@mui/material/Avatar';
+import { keyframes } from '@mui/system';
+import CircularProgress from '@mui/material/CircularProgress';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 import { useClinicStore, QueueItem } from '../store/clinicStore';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
+
+// Add audio file import (place your audio file in public folder)
+const notificationSound = '/notification.mp3';
 
 const fadeIn = keyframes`
   from {
@@ -35,31 +39,69 @@ const pulse = keyframes`
   }
 `;
 
-export default function QueueDisplay() {
-  const { queueItems } = useClinicStore();
-  const [localQueue, setLocalQueue] = useState(queueItems);
-  const [now, setNow] = useState(new Date());
+const QueueDisplay = (): JSX.Element => {
+  const { queueItems, error, clearErrors } = useClinicStore();
+  const [localQueue, setLocalQueue] = useState<QueueItem[]>([]);
+  const [now, setNow] = useState<Date>(new Date());
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [snackbar, setSnackbar] = useState<{open: boolean; message: string}>({
+    open: false,
+    message: ''
+  });
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [lastInProgressId, setLastInProgressId] = useState<string | null>(null);
 
-  // Live clock
+  // Handle errors
   useEffect(() => {
-    const interval = setInterval(() => setNow(new Date()), 1000);
+    if (error) {
+      setSnackbar({ open: true, message: error });
+      clearErrors();
+    }
+  }, [error, clearErrors]);
+
+  // Live clock with cleanup
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(new Date());
+    }, 1000);
     return () => clearInterval(interval);
   }, []);
 
-  // Update local queue when queueItems changes
+  // Load audio
   useEffect(() => {
-    setLocalQueue(queueItems);
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+  }, []);
+
+  // Update local queue when queueItems changes with loading state
+  useEffect(() => {
+    const updateQueue = async () => {
+      try {
+        setIsLoading(true);
+        setLocalQueue([...queueItems]);
+      } catch (err) {
+        setSnackbar({ open: true, message: 'Failed to update queue' });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    updateQueue();
   }, [queueItems]);
 
-  const activeQueueItems = localQueue
-    .filter((item: QueueItem) => item.status === 'Waiting' || item.status === 'In Progress')
-    .sort((a: QueueItem, b: QueueItem) => {
-      if (a.status === 'In Progress' && b.status !== 'In Progress') return -1;
-      if (a.status !== 'In Progress' && b.status === 'In Progress') return 1;
-      return a.queueNumber - b.queueNumber;
-    });
+  const activeQueueItems = useMemo(() => 
+    localQueue
+      .filter((item: QueueItem) => 
+        item.status === 'Waiting' || item.status === 'In Progress'
+      )
+      .sort((a: QueueItem, b: QueueItem) => {
+        if (a.status === 'In Progress' && b.status !== 'In Progress') return -1;
+        if (a.status !== 'In Progress' && b.status === 'In Progress') return 1;
+        return (a.queueNumber || 0) - (b.queueNumber || 0);
+      }),
+    [localQueue]
+  );
 
   const inProgressItem = activeQueueItems.find(item => item.status === 'In Progress');
   const waitingItems = activeQueueItems.filter(item => item.status === 'Waiting');
@@ -78,13 +120,41 @@ export default function QueueDisplay() {
 
   // Play sound when a new queue becomes In Progress
   useEffect(() => {
-    if (displayQueueItem && displayQueueItem.status === 'In Progress') {
-      if (displayQueueItem.id !== lastInProgressId) {
-        audioRef.current?.play();
-        setLastInProgressId(displayQueueItem.id);
+    const playNotification = async () => {
+      if (displayQueueItem?.status === 'In Progress' && displayQueueItem.id !== lastInProgressId) {
+        try {
+          if (audioRef.current) {
+            await audioRef.current.play();
+            setLastInProgressId(displayQueueItem.id);
+          }
+        } catch (err) {
+          console.error('Error playing notification sound:', err);
+        }
       }
-    }
+    };
+
+    playNotification();
   }, [displayQueueItem, lastInProgressId]);
+
+  const handleSnackbarClose = useCallback((): void => {
+    setSnackbar(prev => ({ ...prev, open: false }));
+  }, []);
+
+  // Render Snackbar for notifications
+  const renderSnackbar = useCallback((): JSX.Element => (
+    <Snackbar
+      open={snackbar.open}
+      autoHideDuration={6000}
+      onClose={handleSnackbarClose}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+    >
+      <Alert onClose={handleSnackbarClose} severity="error" sx={{ width: '100%' }}>
+        {snackbar.message}
+      </Alert>
+    </Snackbar>
+  ), [snackbar, handleSnackbarClose]);
+
+  // Render the snackbar component
 
   return (
     <Box 
@@ -141,7 +211,11 @@ export default function QueueDisplay() {
         Total Patients in Queue: {totalQueueCount}
       </Typography>
 
-      {activeQueueItems.length > 0 && !inProgressItem && (
+      {isLoading ? (
+        <Box display="flex" justifyContent="center" my={4}>
+          <CircularProgress />
+        </Box>
+      ) : activeQueueItems.length > 0 && !inProgressItem ? (
         <Box 
           sx={{ 
             mb: 6,
@@ -164,7 +238,16 @@ export default function QueueDisplay() {
             Please Wait
           </Typography>
         </Box>
+      ) : (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <audio id="notification-sound" preload="auto">
+            <source src={notificationSound} type="audio/mp3" />
+            Your browser does not support the audio element.
+          </audio>
+        </Box>
       )}
+      
+      {renderSnackbar()}
 
       <Grid container spacing={6} sx={{ maxWidth: 1800, width: '100%', justifyContent: 'center' }}>
         {displayQueueItem && (
@@ -263,4 +346,6 @@ export default function QueueDisplay() {
       <audio ref={audioRef} src="/sounds/queue-in-progress.mp3" preload="auto" />
     </Box>
   );
-} 
+};
+
+export default QueueDisplay;
