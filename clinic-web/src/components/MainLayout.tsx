@@ -16,6 +16,7 @@ import {
   useMediaQuery,
   CssBaseline,
   Badge,
+  Avatar,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -23,13 +24,10 @@ import {
   People as PeopleIcon,
   EventNote as EventNoteIcon,
   Queue as QueueIcon,
-  Description as DescriptionIcon,
-  ExitToApp as ExitToAppIcon,
-  LocalHospital as LogoIcon,
   Settings as SettingsIcon,
   Notifications as NotificationsIcon,
+  LocalHospital as LogoIcon,
 } from '@mui/icons-material';
-import { useClinicStore } from '../store/clinicStore';
 import mainLogo from '../assets/main-logo.png';
 import useAuth from '../hooks/useAuth';
 

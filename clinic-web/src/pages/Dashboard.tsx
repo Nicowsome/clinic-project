@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   Box,
   Grid,
@@ -6,11 +5,7 @@ import {
   Typography,
   Card,
   CardContent,
-  CardHeader,
-  IconButton,
   useTheme,
-  CircularProgress,
-  Alert,
   List,
   ListItem,
   ListItemText,
@@ -18,8 +13,6 @@ import {
   Chip,
 } from '@mui/material';
 import {
-  MoreVert as MoreVertIcon,
-  TrendingUp as TrendingUpIcon,
   People as PeopleIcon,
   EventNote as EventNoteIcon,
   Queue as QueueIcon,
@@ -27,27 +20,6 @@ import {
   LocalHospital as DoctorIcon,
 } from '@mui/icons-material';
 import { useClinicStore, Doctor, Appointment } from '../store/clinicStore';
-import { Line } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
 
 const styles = {
   fadeIn: {
@@ -80,67 +52,13 @@ const styles = {
 
 export default function Dashboard() {
   const { patients, appointments, doctors, queueItems } = useClinicStore();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const theme = useTheme();
-
-  const stats = [
-    { 
-      title: 'Total Patients', 
-      value: patients.length, 
-      icon: <PeopleIcon sx={{ fontSize: 40 }} />,
-      color: theme.palette.primary.main,
-      gradient: 'linear-gradient(135deg, #1a73e8 0%, #4285f4 100%)'
-    },
-    { 
-      title: 'Upcoming Appointments', 
-      value: appointments.filter((a: Appointment) => new Date(a.date) > new Date()).length, 
-      icon: <EventIcon sx={{ fontSize: 40 }} />,
-      color: theme.palette.info.main,
-      gradient: 'linear-gradient(135deg, #2196f3 0%, #64b5f6 100%)'
-    },
-    { 
-      title: 'Available Doctors', 
-      value: doctors.filter((d: Doctor) => d.isAvailable).length, 
-      icon: <DoctorIcon sx={{ fontSize: 40 }} />,
-      color: theme.palette.secondary.main,
-      gradient: 'linear-gradient(135deg, #00bcd4 0%, #4dd0e1 100%)'
-    },
-    { 
-      title: 'Total Doctors', 
-      value: doctors.length, 
-      icon: <TrendingUpIcon sx={{ fontSize: 40 }} />,
-      color: theme.palette.success.main,
-      gradient: 'linear-gradient(135deg, #4caf50 0%, #81c784 100%)'
-    },
-  ];
 
   // Calculate total queue items for today
   const today = new Date().toISOString().split('T')[0];
   const totalQueueToday = queueItems.filter(item => 
     new Date(item.timestamp).toISOString().split('T')[0] === today
   ).length;
-
-  if (loading) {
-    return (
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh' 
-      }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
-
-  if (error) {
-    return (
-      <Box sx={{ p: 3 }}>
-        <Alert severity="error">{error}</Alert>
-      </Box>
-    );
-  }
 
   return (
     <Box sx={{ 

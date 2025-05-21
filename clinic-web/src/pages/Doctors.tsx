@@ -22,12 +22,14 @@ import {
   keyframes,
   useTheme,
   Alert,
+  Card,
+  CardContent,
 } from '@mui/material';
 import {
   Add as AddIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
-  Schedule as ScheduleIcon,
+  Person as PersonIcon,
 } from '@mui/icons-material';
 import { useClinicStore } from '../store/clinicStore';
 import ConfirmationDialog from '../components/ConfirmationDialog';

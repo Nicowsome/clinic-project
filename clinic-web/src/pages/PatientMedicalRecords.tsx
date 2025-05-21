@@ -31,7 +31,7 @@ import {
   Description as DescriptionIcon,
   Person as PersonIcon,
 } from '@mui/icons-material';
-import { useClinicStore, MedicalRecord, Patient } from '../store/clinicStore';
+import { useClinicStore, MedicalRecord, MedicalRecordStatus, Patient } from '../store/clinicStore';
 
 const fadeIn = keyframes`
   from {
@@ -55,22 +55,28 @@ const slideIn = keyframes`
   }
 `;
 
-interface MedicalRecordFormData {
+type MedicalRecordFormData = {
   patientId: string;
+  patientName: string;
+  date: string;
+  reason: string;
   diagnosis: string;
   treatment: string;
-  notes: string;
-  status: 'Active' | 'Resolved' | 'Follow-up';
   doctor: string;
-}
+  status: MedicalRecordStatus;
+  notes: string;
+};
 
 const initialFormData: MedicalRecordFormData = {
   patientId: '',
+  patientName: '',
+  date: '',
+  reason: '',
   diagnosis: '',
   treatment: '',
-  notes: '',
+  doctor: '',
   status: 'Active',
-  doctor: 'Dr. Wilson',
+  notes: '',
 };
 
 export default function PatientMedicalRecords() {
@@ -91,11 +97,14 @@ export default function PatientMedicalRecords() {
       if (record) {
         setFormData({
           patientId: record.patientId,
+          patientName: record.patientName,
+          date: record.date,
+          reason: record.reason,
           diagnosis: record.diagnosis,
           treatment: record.treatment,
-          notes: record.notes,
-          status: record.status,
           doctor: record.doctor,
+          status: record.status,
+          notes: record.notes || '',
         });
         setEditingRecord(recordId);
       }
@@ -103,6 +112,9 @@ export default function PatientMedicalRecords() {
       setFormData({
         ...initialFormData,
         patientId: selectedPatient?.id || '',
+        patientName: selectedPatient ? `${selectedPatient.firstName} ${selectedPatient.lastName}` : '',
+        date: new Date().toISOString().split('T')[0],
+        reason: '',
       });
       setEditingRecord(null);
     }
@@ -115,21 +127,22 @@ export default function PatientMedicalRecords() {
     setFormData(initialFormData);
   };
 
-  const handleSubmit = () => {
-    if (editingRecord) {
-      updateMedicalRecord(editingRecord, {
+  const handleSubmit = async () => {
+    try {
+      const recordData: Omit<MedicalRecord, 'id'> = {
         ...formData,
-        patientName: selectedPatient ? `${selectedPatient.firstName} ${selectedPatient.lastName}` : '',
-        date: new Date().toISOString(),
-      });
-    } else {
-      addMedicalRecord({
-        ...formData,
-        patientName: selectedPatient ? `${selectedPatient.firstName} ${selectedPatient.lastName}` : '',
-        date: new Date().toISOString(),
-      });
+        notes: formData.notes || '',
+      };
+      
+      if (editingRecord) {
+        await updateMedicalRecord(editingRecord, recordData);
+      } else {
+        await addMedicalRecord(recordData);
+      }
+      handleClose();
+    } catch (error) {
+      console.error('Error saving medical record:', error);
     }
-    handleClose();
   };
 
   const getStatusColor = (status: string) => {
@@ -222,7 +235,7 @@ export default function PatientMedicalRecords() {
                 >
                   <ListItemText
                     primary={`${patient.firstName} ${patient.lastName}`}
-                    secondary={`Age: ${patient.age} | ${patient.gender}`}
+                    secondary={`${patient.gender} • ${patient.age} years old`}
                   />
                 </ListItem>
               ))}
@@ -259,13 +272,10 @@ export default function PatientMedicalRecords() {
                         Gender: {selectedPatient.gender}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        Blood Type: {selectedPatient.bloodType}
+                        Phone: {selectedPatient.phone}
                       </Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <Typography variant="body2" color="text.secondary">
-                        Phone: {selectedPatient.phone}
-                      </Typography>
                       <Typography variant="body2" color="text.secondary">
                         Email: {selectedPatient.email}
                       </Typography>
@@ -400,6 +410,17 @@ export default function PatientMedicalRecords() {
         </DialogTitle>
         <DialogContent>
           <Grid container spacing={2} sx={{ mt: 1 }}>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Reason for Visit"
+                value={formData.reason}
+                onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
+                required
+                multiline
+                rows={2}
+              />
+            </Grid>
             <Grid item xs={12}>
               <TextField
                 fullWidth

@@ -29,8 +29,9 @@ import {
   Delete as DeleteIcon,
   Add as AddIcon,
   EventNote as EventNoteIcon,
+  Person as PersonIcon,
 } from '@mui/icons-material';
-import { useClinicStore } from '../store/clinicStore';
+import { useClinicStore, Patient, Gender } from '../store/clinicStore';
 import ConfirmationDialog from '../components/ConfirmationDialog';
 
 const fadeIn = keyframes`
