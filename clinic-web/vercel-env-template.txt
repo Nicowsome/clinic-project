@@ -1,0 +1,4 @@
+VITE_API_URL=https://your-backend-api-url.com/api/v1
+
+# Replace "your-backend-api-url.com" with your actual deployed backend URL
+# For example: https://clinic-api.railway.app/api/v1

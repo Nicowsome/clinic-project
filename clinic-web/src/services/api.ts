@@ -1,33 +1,18 @@
-import axios from 'axios';
+// Import the mock API service that includes all mock data responses
+import mockApi from './mockApiService';
 
-const api = axios.create({
-  baseURL: (import.meta as any).env?.VITE_API_URL || 'https://clinic-api-demo.herokuapp.com/api/v1',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+// Re-export the mock API
+const api = mockApi;
 
-// Add request interceptor for authentication
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+// Add token handling to localStorage for consistent behavior with the real app
+export const setAuthToken = (token: string) => {
+  localStorage.setItem('token', token);
+};
 
-// Add response interceptor for error handling
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      // Handle unauthorized access
-      localStorage.removeItem('token');
-      window.location.href = '/login';
-    }
-    return Promise.reject(error);
-  }
-);
+export const clearAuthToken = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+};
 
 export const patientService = {
   getAll: () => api.get('/patients'),
@@ -47,24 +32,16 @@ export const appointmentService = {
 
 export const authService = {
   login: (credentials: { email: string; password: string }) => {
-    // Use direct URL to ensure correct path for login
-    const apiUrl = (import.meta as any).env?.VITE_API_URL || 'https://clinic-api-demo.herokuapp.com/api/v1';
-    return axios.post(`${apiUrl}/auth/login`, credentials, {
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    });
+    // Use the mock API directly
+    return api.post('/auth/login', credentials);
   },
   register: (userData: any) => {
-    const apiUrl = (import.meta as any).env?.VITE_API_URL || 'https://clinic-api-demo.herokuapp.com/api/v1';
-    return axios.post(`${apiUrl}/auth/register`, userData, {
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    });
+    // Use the mock API directly
+    return api.post('/auth/register', userData);
   },
   logout: () => {
-    localStorage.removeItem('token');
+    // Clear token and user data
+    clearAuthToken();
     window.location.href = '/login';
   }
 };

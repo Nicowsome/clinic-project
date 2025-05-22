@@ -42,7 +42,7 @@ app.use(
         styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
         fontSrc: ["'self'", "https://fonts.gstatic.com"],
         imgSrc: ["'self'", "data:", "https://*"],
-        connectSrc: ["'self'", process.env.CORS_ORIGIN || 'http://localhost:5173']
+        connectSrc: ["'self'", process.env.CORS_ORIGIN || 'http://localhost:5173', 'https://clinic-project-ochre.vercel.app']
       }
     },
     xssFilter: true,
@@ -87,8 +87,10 @@ app.use(hpp({
 
 // Enable CORS
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  origin: [process.env.CORS_ORIGIN || 'http://localhost:5173', 'https://clinic-project-ochre.vercel.app'],
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
