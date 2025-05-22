@@ -73,7 +73,7 @@ const UserSchema = new mongoose_1.Schema({
     isActive: {
         type: Boolean,
         default: true
-    }
+    },
 }, {
     timestamps: true
 });
@@ -105,13 +105,13 @@ UserSchema.methods.generateAuthToken = function () {
     if (!secret) {
         throw new Error('JWT_SECRET environment variable is not defined');
     }
-    // Set default expiration to 24 hours (in seconds)
-    // Using a numeric value (in seconds) for expiresIn to avoid TypeScript issues
-    const defaultExpiry = 86400; // 24 hours in seconds
+    // Get JWT expiration from environment variables or use a default
+    // JWT library accepts string (like '1d') or number (seconds)
+    const jwtExpiresIn = process.env.JWT_EXPIRES_IN || '1d';
     // Create sign options object
     const options = {
-        expiresIn: defaultExpiry // Numeric value in seconds is compatible with jsonwebtoken types
-    };
+        expiresIn: jwtExpiresIn // The jwt library handles both string and number formats
+    }; // Type assertion to avoid TypeScript errors
     return jsonwebtoken_1.default.sign({ id: this._id, role: this.role }, secret, options);
 };
 // Add indexes (email is already unique, so no need for explicit index)

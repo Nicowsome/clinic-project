@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Notification } from '../context/NotificationContext';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api/v1';
+const API_URL = (import.meta as any).env?.VITE_API_URL || 'https://clinic-api-demo.herokuapp.com/api/v1';
 
 // Interface for API notification objects (different from frontend Notification objects)
 interface ApiNotification {

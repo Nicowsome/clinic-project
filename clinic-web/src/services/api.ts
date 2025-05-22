@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: (import.meta as any).env?.VITE_API_URL ? (import.meta as any).env.VITE_API_URL : 'http://localhost:3000/api/v1',
+  baseURL: (import.meta as any).env?.VITE_API_URL || 'https://clinic-api-demo.herokuapp.com/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -48,21 +48,25 @@ export const appointmentService = {
 export const authService = {
   login: (credentials: { email: string; password: string }) => {
     // Use direct URL to ensure correct path for login
-    return axios.post('http://localhost:3000/api/v1/auth/login', credentials, {
+    const apiUrl = (import.meta as any).env?.VITE_API_URL || 'https://clinic-api-demo.herokuapp.com/api/v1';
+    return axios.post(`${apiUrl}/auth/login`, credentials, {
       headers: {
         'Content-Type': 'application/json',
       }
     });
   },
-  register: (userData: any) => axios.post('http://localhost:3000/api/v1/auth/register', userData, {
-    headers: {
-      'Content-Type': 'application/json',
-    }
-  }),
+  register: (userData: any) => {
+    const apiUrl = (import.meta as any).env?.VITE_API_URL || 'https://clinic-api-demo.herokuapp.com/api/v1';
+    return axios.post(`${apiUrl}/auth/register`, userData, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+  },
   logout: () => {
     localStorage.removeItem('token');
     window.location.href = '/login';
-  },
+  }
 };
 
 export default api; 

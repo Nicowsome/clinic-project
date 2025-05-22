@@ -17,14 +17,34 @@ const errorHandler_1 = require("./middleware/errorHandler");
 const patientRoutes_1 = __importDefault(require("./routes/patientRoutes"));
 const medicalRecordRoutes_1 = __importDefault(require("./routes/medicalRecordRoutes"));
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
+const notificationRoutes_1 = __importDefault(require("./routes/notificationRoutes"));
 // Load environment variables
 dotenv_1.default.config({ path: '.env' });
 // Create Express app
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3000;
 // 1) GLOBAL MIDDLEWARES
-// Set security HTTP headers
-app.use((0, helmet_1.default)());
+// Set security HTTP headers with enhanced Content Security Policy
+app.use((0, helmet_1.default)({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+            styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+            fontSrc: ["'self'", "https://fonts.gstatic.com"],
+            imgSrc: ["'self'", "data:", "https://*"],
+            connectSrc: ["'self'", process.env.CORS_ORIGIN || 'http://localhost:5173']
+        }
+    },
+    xssFilter: true,
+    noSniff: true,
+    referrerPolicy: { policy: 'same-origin' },
+    hsts: {
+        maxAge: 15552000, // 180 days in seconds
+        includeSubDomains: true,
+        preload: true
+    }
+}));
 // Development logging
 if (process.env.NODE_ENV === 'development') {
     app.use((0, morgan_1.default)('dev'));
@@ -64,6 +84,7 @@ app.use((req, res, next) => {
 app.use('/api/v1/auth', authRoutes_1.default);
 app.use('/api/v1/patients', patientRoutes_1.default);
 app.use('/api/v1/medical-records', medicalRecordRoutes_1.default);
+app.use('/api/v1/notifications', notificationRoutes_1.default);
 // 4) ERROR HANDLING MIDDLEWARE
 app.use(errorHandler_1.errorHandler);
 // 5) START SERVER
