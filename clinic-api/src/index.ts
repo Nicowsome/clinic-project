@@ -32,8 +32,29 @@ const PORT = process.env.PORT || 3000;
 
 // 1) GLOBAL MIDDLEWARES
 
-// Set security HTTP headers
-app.use(helmet());
+// Set security HTTP headers with enhanced Content Security Policy
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        imgSrc: ["'self'", "data:", "https://*"],
+        connectSrc: ["'self'", process.env.CORS_ORIGIN || 'http://localhost:5173']
+      }
+    },
+    xssFilter: true,
+    noSniff: true,
+    referrerPolicy: { policy: 'same-origin' },
+    hsts: {
+      maxAge: 15552000, // 180 days in seconds
+      includeSubDomains: true,
+      preload: true
+    }
+  })
+);
 
 // Development logging
 if (process.env.NODE_ENV === 'development') {

@@ -7,10 +7,12 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+    env_file:
+      - ./clinic-api/.env.production
     environment:
       - NODE_ENV=production
       - MONGODB_URI=mongodb://mongodb:27017/clinic-management
-      - JWT_SECRET=pB8awdUJFm2dq3XzQhTPyZr5LK6vEj9G
+      # JWT_SECRET is now loaded from .env.production file
     depends_on:
       - mongodb
     volumes:
