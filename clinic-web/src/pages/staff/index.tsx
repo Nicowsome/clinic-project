@@ -26,6 +26,7 @@ import {
   DialogActions,
   Tabs,
   Tab,
+  Divider,
 } from '@mui/material';
 import {
   Search as SearchIcon,
@@ -109,7 +110,7 @@ const StaffManagement = () => {
     setStaff(mockStaffData);
   }, []);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
@@ -160,7 +161,7 @@ const StaffManagement = () => {
     setProfileDialogOpen(true);
   };
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
 
@@ -174,11 +175,7 @@ const StaffManagement = () => {
     return matchesSearch && matchesRole;
   });
 
-  // Count staff by role
-  const staffByRole = staff.reduce((acc, member) => {
-    acc[member.role] = (acc[member.role] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  // Count staff by role - removed unused variable to fix build error
 
   // Count staff by status
   const activeStaff = staff.filter(member => member.status === 'Active').length;
@@ -341,7 +338,7 @@ const StaffManagement = () => {
                 onChange={(e) => setRoleFilter(e.target.value)}
                 SelectProps={{
                   native: false,
-                  renderValue: (value) => value === 'all' ? 'All Roles' : value,
+                  renderValue: (value) => (value === 'all' ? 'All Roles' : value) as React.ReactNode,
                 }}
               >
                 <option value="all">All Roles</option>

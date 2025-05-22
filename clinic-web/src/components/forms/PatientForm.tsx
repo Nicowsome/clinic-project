@@ -34,9 +34,8 @@ export default function PatientForm() {
     resolver: zodResolver(patientSchema),
   });
 
-  const onSubmit = (data: PatientFormData) => {
-    console.log(data);
-    // Handle form submission
+  const onSubmit = (_data: PatientFormData) => {
+    // Handle form submission logic here
   };
 
   return (

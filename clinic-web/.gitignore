@@ -19,9 +19,7 @@
 .env.local
 .env.development.local
 .env.test.local
-.env.production.localgit rm --cached clinic-api/.env
-git rm --cached clinic-api/.env.example
-git rm --cached clinic-web/.env.production
+.env.production.local
 
 yarn-error.log*
 
@@ -35,4 +33,7 @@ yarn-error.log*
 *.sw?
 
 # TypeScript
-*.tsbuildinfo 
+*.tsbuildinfo
+
+# Backup files
+/backup

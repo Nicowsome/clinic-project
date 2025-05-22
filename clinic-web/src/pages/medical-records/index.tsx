@@ -15,7 +15,6 @@ import {
   TablePagination,
   IconButton,
   Chip,
-  useTheme,
 } from '@mui/material';
 import { 
   Search as SearchIcon,
@@ -27,7 +26,7 @@ import {
 import { useNotifications } from '../../context/NotificationContext';
 
 const MedicalRecords = () => {
-  const theme = useTheme();
+  // theme removed
   const { addNotification } = useNotifications();
   const [records, setRecords] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -47,7 +46,7 @@ const MedicalRecords = () => {
     setRecords(mockRecords);
   }, []);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
 

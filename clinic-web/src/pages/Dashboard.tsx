@@ -1,25 +1,17 @@
-import {
-  Box,
-  Grid,
-  Paper,
-  Typography,
-  Card,
-  CardContent,
-  useTheme,
-  List,
+import { Box, Grid, Paper, Typography, Card, CardContent, useTheme, 
   ListItem,
   ListItemText,
   ListItemIcon,
   Chip,
-  Tabs,
-  Tab,
+  List
 } from '@mui/material';
+
 import {
   People as PeopleIcon,
   EventNote as EventNoteIcon,
   Queue as QueueIcon,
   Event as EventIcon,
-  LocalHospital as DoctorIcon,
+  LocalHospital as DoctorIcon
 } from '@mui/icons-material';
 import { useClinicStore, Doctor, Appointment } from '../store/clinicStore';
 

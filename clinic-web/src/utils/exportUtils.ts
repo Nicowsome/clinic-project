@@ -60,46 +60,25 @@ export const formatDate = (date: Date | string): string => {
 };
 
 // Function to generate a PDF (with fallback for missing dependencies)
+// Simple placeholder for PDF generation
 export const generatePDF = async (
   elementId: string,
-  filename: string = 'download',
-  orientation: 'portrait' | 'landscape' = 'portrait'
+  _filename: string = 'download',
+  _orientation: 'portrait' | 'landscape' = 'portrait'
 ): Promise<void> => {
   try {
-    // Check if dependencies are installed
-    let jsPDF;
-    let html2canvas;
-    
-    try {
-      // Try to dynamically import the libraries
-      // These imports will be replaced with actual imports if the libraries get installed
-      jsPDF = { default: class { constructor() { throw new Error('jsPDF not available'); } } };
-      html2canvas = { default: () => { throw new Error('html2canvas not available'); } };
-      
-      // Use a simple check for PDF generation availability
-      if (typeof window !== 'undefined' && window.document) {
-        console.log('PDF generation attempted but libraries not available');
-      }
-    } catch (importError) {
-      console.warn('PDF libraries not available:', importError);
-      throw new Error('PDF generation dependencies not installed');
-    }
-    
     // Get the element to export
     const element = document.getElementById(elementId);
     if (!element) {
       throw new Error(`Element with ID ${elementId} not found`);
     }
     
-    // This is a fallback since we don't have the actual PDF libraries
-    // In a real implementation with the libraries installed, this would be different
+    // This is a placeholder since we don't have PDF libraries
     console.log(`Would have exported element ${elementId} as PDF`);
     alert('PDF export requires additional libraries. Please use CSV export instead.');
     
-    // If implementation is completed with proper libraries, the PDF generation would happen here
   } catch (error) {
     console.error('Failed to generate PDF:', error);
-    // Fallback for environments without required libraries
     alert('PDF export is not available. Please use CSV export instead.');
   }
 };

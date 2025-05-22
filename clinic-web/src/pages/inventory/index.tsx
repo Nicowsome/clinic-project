@@ -15,7 +15,6 @@ import {
   TablePagination,
   IconButton,
   Chip,
-  useTheme,
   Grid,
   Card,
   CardContent,
@@ -42,7 +41,7 @@ import {
 import { useNotifications } from '../../context/NotificationContext';
 
 const Inventory = () => {
-  const theme = useTheme();
+  // theme removed
   const { addNotification } = useNotifications();
   const [inventory, setInventory] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -69,7 +68,7 @@ const Inventory = () => {
     setInventory(mockInventory);
   }, []);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
 

@@ -15,7 +15,6 @@ import {
   TablePagination,
   IconButton,
   Chip,
-  useTheme,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -32,7 +31,6 @@ import {
 import { useNotifications } from '../../context/NotificationContext';
 
 const Prescriptions = () => {
-  const theme = useTheme();
   const { addNotification } = useNotifications();
   const [prescriptions, setPrescriptions] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -42,7 +40,6 @@ const Prescriptions = () => {
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [selectedPrescription, setSelectedPrescription] = useState<any>(null);
 
-  // Placeholder data for demonstration
   useEffect(() => {
     const mockPrescriptions = [
       { id: 1, patientName: 'John Doe', medication: 'Amoxicillin 500mg', dosage: '1 tablet TID', issueDate: '2025-05-01', expiryDate: '2025-06-01', status: 'Active' },
@@ -54,7 +51,7 @@ const Prescriptions = () => {
     setPrescriptions(mockPrescriptions);
   }, []);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
@@ -65,7 +62,6 @@ const Prescriptions = () => {
 
   const handleRefresh = () => {
     setLoading(true);
-    // Simulate API call
     setTimeout(() => {
       setLoading(false);
       addNotification({
@@ -76,7 +72,7 @@ const Prescriptions = () => {
     }, 800);
   };
 
-  const handleCreatePrescription = () => {
+  const handleCreatePrescription = (_event: React.FormEvent) => {
     addNotification({
       type: 'info',
       title: 'Feature Coming Soon',

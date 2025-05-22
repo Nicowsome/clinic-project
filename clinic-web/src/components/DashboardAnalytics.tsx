@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Grid, Paper, Typography, Box, CircularProgress } from '@mui/material';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import api from '../services/api';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
@@ -19,7 +18,7 @@ interface DashboardMetric {
   title: string;
   value: number;
   description: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode; // Add optional icon property
 }
 
 const DashboardAnalytics: React.FC = () => {
@@ -69,7 +68,7 @@ const DashboardAnalytics: React.FC = () => {
     fetchData();
   }, []);
 
-  const MetricCard = ({ title, value, description }: DashboardMetric) => (
+  const MetricCard = ({ title, value, description, icon }: DashboardMetric) => (
     <Paper
       elevation={2}
       sx={{
@@ -94,6 +93,7 @@ const DashboardAnalytics: React.FC = () => {
       <Typography variant="body2" color="textSecondary">
         {description}
       </Typography>
+      {icon && icon} // Add icon if it exists
     </Paper>
   );
 
@@ -194,9 +194,9 @@ const DashboardAnalytics: React.FC = () => {
                   fill="#8884d8"
                   paddingAngle={5}
                   dataKey="value"
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }: { name: string; percent: number }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                 >
-                  {patientsByStatus.map((entry, index) => (
+                  {patientsByStatus.map((_entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
